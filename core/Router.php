@@ -1,14 +1,29 @@
 <?php
 
+/**
+ * Class to identify controllers and actions from PATH_INFO
+ *
+ * @var array $routes
+ */
 class Router
 {
   protected $routes;
 
+  /**
+   * Constructor.
+   *
+   * @param array $definitions routing defined array
+   */
   public function __construct($definitions)
   {
     $this->routes = $this->compileRoutes($definitions);
   }
 
+  /**
+   * Converting dynamic parameter specifications in the routing definition array to a regex format.
+   *
+   * @param array $definitions routing defined array
+   */
   public function compileRoutes($definitions)
   {
     $routes = array();
@@ -30,6 +45,11 @@ class Router
     return $routes;
   }
 
+  /**
+   * Identigy routing parameters from PATH_INFO.
+   *
+   * @param string $path_info
+   */
   public function resolve($path_info)
   {
     if ( '/' !== substr($path_info, 0, 1) ) {
