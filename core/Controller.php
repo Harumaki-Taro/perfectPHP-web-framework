@@ -122,4 +122,49 @@ abstract class Controller
     $this->response->setHttpHeader('Location', $url);
   }
 
+  /**
+   * Generate a token, store it in the session, and then return it.
+   *
+   * @param  string $form_name
+   * @return string
+   */
+  protected function generateCsrfToken($form_name)
+  {
+    $key    = 'csrf_token/' . $form_name;
+    $tokens = $this->session->get($key, array());
+
+    if ( count($tokens) > 10 ) {
+      array_shift($tokens);
+    }
+
+    $token = sha1($form_name . session_id() . microtime());
+    $tokens[] = $token;
+
+    $this->session->set($key, $tokens);
+
+    return $token;
+  }
+
+  /**
+   * Return the result of comparing the token in the request with the one stored in the session, and
+   * remove it from the session.
+   *
+   * @param  string $form_name
+   * @param  string $token
+   * @return bool
+   */
+  protected function checkCsrfToken($form_name, $token)
+  {
+    $key    = 'csrf_tokens/' . $form_name;
+    $tokens = $this->session->get($key, array());
+
+    if ( false !== ($pos = array_search($token, $tokens, true)) ) {
+      unset($tokens[$pos]);
+      $this->session->set($key, $tokens);
+
+      return true;
+    }
+
+    return false;
+  }
 }
