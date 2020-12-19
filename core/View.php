@@ -9,7 +9,7 @@ class View
   /**
    * Constructor.
    *
-   * @param string $base_dir the absolute path to the views directory (i.e. path/to/views/user)
+   * @param string $base_dir the absolute path to the views directory (i.e. path/to/views)
    * @param array  $defaults
    */
   public function __construct($base_dir, $defaults = array())
@@ -36,8 +36,8 @@ class View
   /**
    * Load the view file.
    * [NOTICE]
-   * To avoid collisions of variable names when extracting variables by extract(), all variables
-   * defined in render() method are marked with underscores.
+   * To avoid collisions of variable names when extracting variables by extract() in render(), all
+   * variables are marked with underscores.
    *
    * @param string  $_path
    * @param array   $_variables
