@@ -13,7 +13,7 @@
  * @var Session   $session
  * @var DbManager $db_manager
  * @var Router    $router
- * @var array     $login_action [$controller_name, $action]
+ * @var array     $login_action = array() [$controller_name, $action]
  */
 abstract class Application
 {
@@ -28,7 +28,7 @@ abstract class Application
   /**
    * Constructor.
    *
-   * @param bool $debug
+   * @param bool $debug = false
    */
   public function __construct($debug = false)
   {
@@ -189,6 +189,7 @@ abstract class Application
   {
     try {
       $params = $this->router->resolve($this->request->getPathInfo());
+
       if ( $params === false ) {
         throw new HttpNotFoundException('No route found for ' . $this->request->getPathInfo());
       }
@@ -197,8 +198,10 @@ abstract class Application
       $action     = $params['action'];
 
       $this->runAction($controller, $action, $params);
+
     } catch ( HttpNotFoundException $e ) {
       $this->render404Page($e);
+
     } catch ( UnauthorizedActionException $e ) {
       list($controller, $action) = $this->login_action;
       $this->runAction($controller, $action);
@@ -212,7 +215,7 @@ abstract class Application
    *
    * @param  string $controller_name
    * @param  string $action
-   * @param  array  $params
+   * @param  array  $params = array()
    * @return void
    */
   public function runAction($controller_name, $action, $params = array())
@@ -256,6 +259,7 @@ abstract class Application
   /**
    * Render 404 Not Found Page
    *
+   * @param  Exception $e
    * @return void
    */
   protected function render404Page($e)
@@ -278,5 +282,4 @@ abstract class Application
 EOF
     );
   }
-  
 }

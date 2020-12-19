@@ -37,7 +37,7 @@ abstract class DbRepository
    * array(array('id' => ':name', 'value' => @name, 'type' => 'string' ), ...)
    *
    * @param  string       $sql
-   * @param  array        $params
+   * @param  array        $params = array()
    * @return PDOStatement
    */
   public function execute($sql, $params = array())
@@ -87,8 +87,8 @@ abstract class DbRepository
    * $params[array] should be a multidimensional associative array below.
    * array(array('id' => ':name', 'value' => @name, 'type' => 'string' ), ...)
    *
-   * @param  string       $sql
-   * @param  array        $params
+   * @param  string $sql
+   * @param  array  $params = array()
    * @return array
    */
   public function fetch($sql, $params = array())
@@ -102,8 +102,8 @@ abstract class DbRepository
    * $params[array] should be a multidimensional associative array below.
    * array(array('id' => ':name', 'value' => @name, 'type' => 'string' ), ...)
    *
-   * @param  string       $sql
-   * @param  array        $params
+   * @param  string $sql
+   * @param  array  $params = array()
    * @return array
    */
   public function fetchAll($sql, $params = array())

@@ -23,7 +23,7 @@ class Request
    * Get a variable passed to the current script in URL parameters (query strings).
    *
    * @param  string $name
-   * @param  mixed  $default = null
+   * @param  string $default = null
    * @return string
    */
   public function getGet($name, $default = null)
@@ -39,7 +39,7 @@ class Request
    * Get a variable passed to the current script from the HTTP POST method.
    *
    * @param  string $name
-   * @param  mixed  $default = null
+   * @param  string $default = null
    * @return string
    */
   public function getPost($name, $default = null)
@@ -115,7 +115,7 @@ class Request
    */
   public function getPathInfo()
   {
-    $base_url = $this->getBaseUrl();
+    $base_url    = $this->getBaseUrl();
     $request_uri = $this->getRequestUri();
 
     if ( false !== ($pos = strpos($request_uri, '?')) ) {

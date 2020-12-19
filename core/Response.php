@@ -4,9 +4,9 @@
  * Class to manage a server response.
  *
  * @var mixed  $content
- * @var int    $status_code
- * @var string $status_text
- * @var array  $http_headers
+ * @var int    $status_code = 200
+ * @var string $status_text = 'OK'
+ * @var array  $http_headers = array()
  */
 class Response
 {
@@ -22,7 +22,7 @@ class Response
    */
   public function send()
   {
-    header('HTTP/1.1 ' . $this->status_code . ' ' . $this->status_text);
+    header('HTTP/2 ' . $this->status_code . ' ' . $this->status_text);
 
     foreach ( $this->http_headers as $name => $value ) {
       header($name . ': ' . $value);

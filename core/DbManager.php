@@ -62,6 +62,7 @@ class DbManager
   /**
    * [Destructive] Set dsn for mysel
    *
+   * @param  array &$params
    * @return void
    */
   protected function setMysqlDsn(&$params) {
@@ -77,6 +78,7 @@ class DbManager
   /**
    * [Destructive] Set dsn for SQLite
    *
+   * @param array &$params
    * @return void
    */
   protected function setSqliteDsn(&$params) {
@@ -131,7 +133,7 @@ class DbManager
   /**
    * Get DbRepository instance.
    *
-   * @param  string $repository_name
+   * @param  string       $repository_name
    * @return DbRepository
    */
   public function get($repository_name)

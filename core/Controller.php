@@ -43,7 +43,7 @@ abstract class Controller
    * Execute action
    *
    * @param  string $action
-   * @param  array  $params
+   * @param  array  $params = array()
    * @return string
    */
   public function run($action, $params = array())
@@ -69,7 +69,7 @@ abstract class Controller
    * Load the view file corresponding to $this->action_name or $template. Wrapper for View.render()
    * method.
    *
-   * @param  array  $variables
+   * @param  array  $variables = array()
    * @param  string $template = null
    * @param  string $layout = 'layout'
    * @return string
@@ -160,7 +160,7 @@ abstract class Controller
       array_shift($tokens);
     }
 
-    $token = sha1($form_name . session_id() . microtime());
+    $token    = sha1($form_name . session_id() . microtime());
     $tokens[] = $token;
 
     $this->session->set($key, $tokens);

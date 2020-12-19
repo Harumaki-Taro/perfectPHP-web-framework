@@ -33,7 +33,7 @@ class Router
       $tokens = explode('/', ltrim($url, '/'));
       foreach ( $tokens as $i => $token ) {
         if ( 0 === strpos($token, ':') ) {
-          $name = substr($token, 1);
+          $name  = substr($token, 1);
           $token = '(?P<)' . $name . '>[^/]+)';
         }
         $tokens[$i] = $token;

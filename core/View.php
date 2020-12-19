@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Class to controll view file laoding and variables passed to the view file.
+ *
+ * @var string $base_dir
+ * @var array  $defaults
+ * $var array  $layout_variables = array()
+ */
 class View
 {
   protected $base_dir;
@@ -62,7 +69,8 @@ class View
     // Combine the layout files if necessary
     if ( $_layout ) {
       $_content = $this->render($_layout,
-                               array_merge($this->layout_variables, array('__content' => $_content)));
+                                array_merge($this->layout_variables,
+                                            array('__content' => $_content)));
     }
 
     return $_content;
