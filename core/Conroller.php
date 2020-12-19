@@ -40,8 +40,9 @@ abstract class Controller
   /**
    * Execute action
    *
-   * @param string $action
-   * @param array  $params
+   * @param  string $action
+   * @param  array  $params
+   * @return string
    */
   public function run($action, $params = array())
   {
@@ -103,6 +104,7 @@ abstract class Controller
    * If you want to redirect different actions in the same application, you can specify PATH_INFO
    * only.
    *
+   * @param  string $url
    * @return void
    */
   protected function redirect($url)
