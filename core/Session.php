@@ -64,7 +64,7 @@ class Session
   /**
    * Regenerate session id.
    *
-   * @param  bool  $destroy = true
+   * @param  bool $destroy = true
    * @return void
    */
   public function regenerate($destroy = true)
@@ -81,12 +81,12 @@ class Session
    * [NOTICE]
    * This method is a simple login function.
    *
-   * @param  bool  $destroy = true
+   * @param  bool $destroy = true
    * @return void
    */
   public function setAuthenticated($bool)
   {
-    $this->set('_authenticated', (boolean)$bool);
+    $this->set('_authenticated', $bool);
 
     $this->regenerate();
   }
@@ -96,7 +96,7 @@ class Session
    * [NOTICE]
    * This method is a simple login function.
    *
-   * @return bool
+   * @retuen bool
    */
   public function isAuthenticated()
   {
