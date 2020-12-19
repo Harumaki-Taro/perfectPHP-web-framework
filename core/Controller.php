@@ -10,6 +10,7 @@
  * @var Response    $response
  * @var Session     $session
  * @var DbManager   $db_manager
+ * @var array|bool  $auth_actions array of $action or true.
  */
 abstract class Controller
 {
@@ -20,6 +21,7 @@ abstract class Controller
   protected $response;
   protected $session;
   protected $db_manager;
+  protected $auth_actions = array();
 
   /**
     * Constructor.
@@ -51,6 +53,11 @@ abstract class Controller
     $action_method = $this->action_name . 'Action';
     if ( ! method_exists($this, $action_method) ) {
       $this->forward404();
+    }
+
+    if ( $this->needsAuthentication($action) && !$this->session->isAuthenticated() )
+    {
+      throw new UnauthorizedActionException();
     }
 
     $content = $this->$action_method($params);
@@ -120,6 +127,22 @@ abstract class Controller
 
     $this->response->setStatusCode(302, 'Found');
     $this->response->setHttpHeader('Location', $url);
+  }
+
+  /**
+   * Check if a login authentication is required.
+   *
+   * @param  string $action
+   * @return bool
+   */
+  protected function needsAuthentication($action)
+  {
+    if ( $this->auth_actions === true
+        || (is_array($this->auth_actions) && in_array($action, $this->auth_actions)) ) {
+      return true;
+    }
+
+    return false;
   }
 
   /**

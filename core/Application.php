@@ -13,6 +13,7 @@
  * @var Session   $session
  * @var DbManager $db_manager
  * @var Router    $router
+ * @var array     $login_action [$controller_name, $action]
  */
 abstract class Application
 {
@@ -22,6 +23,7 @@ abstract class Application
   protected $session;
   protected $db_manager;
   protected $router;
+  protected $login_action = array();
 
   /**
    * Constructor.
@@ -195,8 +197,11 @@ abstract class Application
       $action     = $params['action'];
 
       $this->runAction($controller, $action, $params);
-    } catch (HttpNotFoundException $e) {
+    } catch ( HttpNotFoundException $e ) {
       $this->render404Page($e);
+    } catch ( UnauthorizedActionException $e ) {
+      list($controller, $action) = $this->login_action;
+      $this->runAction($controller, $action);
     }
 
     $this->response->send();
