@@ -24,8 +24,8 @@ class View
   /**
    * Set the values you want to include in the layout file. (i.e. title)
    *
-   * @param string $name
-   * @param string $value
+   * @param  string $name
+   * @param  string $value
    * @return void
    */
   public function setLayoutVar($name, $value)
@@ -39,9 +39,9 @@ class View
    * To avoid collisions of variable names when extracting variables by extract() in render(), all
    * variables are marked with underscores.
    *
-   * @param string  $_path
-   * @param array   $_variables
-   * @param bool    $_layout
+   * @param  string $_path
+   * @param  array  $_variables
+   * @param  bool   $_layout
    * @return string
    */
   public function render($_path, $_variables = array(), $_layout = false)

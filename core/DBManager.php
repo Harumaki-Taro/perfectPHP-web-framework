@@ -17,7 +17,7 @@ class DbManager
    *
    * @param  string $name
    * @param  array  $params
-   * @return null
+   * @return void
    */
   public function connect($name, $params)
   {
@@ -62,7 +62,7 @@ class DbManager
   /**
    * [Destructive] Set dsn for mysel
    *
-   * @return null
+   * @return void
    */
   protected function setMysqlDsn(&$params) {
     $params['dsn'] = $params['driver']
@@ -77,7 +77,7 @@ class DbManager
   /**
    * [Destructive] Set dsn for SQLite
    *
-   * @return null
+   * @return void
    */
   protected function setSqliteDsn(&$params) {
     $params['dsn'] = $params['driver'] . ':' . $params['dbname'];
@@ -103,7 +103,7 @@ class DbManager
    *
    * @param  string $repository_name
    * @param  string $name
-   * @retuen null
+   * @retuen void
    */
   public function setRepositoryConnectionMap($repository_name, $name)
   {

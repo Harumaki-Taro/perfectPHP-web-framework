@@ -18,7 +18,7 @@ class Response
   /**
    * Send a response.
    *
-   * @return null
+   * @return void
    */
   public function send()
   {
@@ -34,7 +34,7 @@ class Response
   /**
    * Set a content such as HTML.
    *
-   * @return null
+   * @return void
    */
   public function setContent($content)
   {
@@ -46,7 +46,7 @@ class Response
    *
    * @param  int    $status_code
    * @param  string $status_text
-   * @return null
+   * @return void
    */
   public function setStatusCode($status_code, $status_text = '')
   {
@@ -59,7 +59,7 @@ class Response
    *
    * @param  string $name
    * @param  string $value
-   * @return null
+   * @return void
    */
   public function setHttpHeader($name, $value)
   {

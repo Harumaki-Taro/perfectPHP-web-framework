@@ -8,11 +8,11 @@
 class ClassLoader
 {
   protected $dirs;
-  
+
   /**
    * Register the autoloader class.
    *
-   * @return null
+   * @return void
    */
   public function register()
   {
@@ -21,9 +21,9 @@ class ClassLoader
 
   /**
    * Register the directory where the autoloader class files exist.
-   * 
+   *
    * @param  string $dir
-   * @return null
+   * @return void
    */
   public function registerDir($dir)
   {

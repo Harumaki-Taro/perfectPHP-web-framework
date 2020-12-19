@@ -22,7 +22,8 @@ class Router
   /**
    * Converting dynamic parameter specifications in the routing definition array to a regex format.
    *
-   * @param array $definitions routing defined array
+   * @param  array $definitions routing defined array
+   * @return array
    */
   public function compileRoutes($definitions)
   {
@@ -48,7 +49,8 @@ class Router
   /**
    * Identigy routing parameters from PATH_INFO.
    *
-   * @param string $path_info
+   * @param  string $path_info
+   * @return array|bool
    */
   public function resolve($path_info)
   {
