@@ -136,7 +136,7 @@ class DbManager
    * @param  string       $repository_name
    * @return DbRepository
    */
-  public function get($repository_name)
+  protected function get($repository_name)
   {
     if ( !isset($this->repositories[$repository_name]) ) {
       $repository_class = $repository_name . 'Repository';
@@ -165,5 +165,35 @@ class DbManager
     foreach ($this->connections as $pdo ) {
       unset($pdo);
     }
+  }
+
+  /**
+   * __get
+   *
+   * @return mixed
+   */
+  public function __get($name)
+  {
+    return $this->get($name);
+  }
+
+  /**
+   * __isset
+   *
+   * @return bool
+   */
+  public function __isset($name)
+  {
+    return isset($this->repositories[$name]);
+  }
+
+  /**
+   * __unset
+   *
+   * @return void
+   */
+  public function __unset($name)
+  {
+    unset($this->repositories[$name]);
   }
 }
