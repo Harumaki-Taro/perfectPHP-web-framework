@@ -18,15 +18,15 @@
   # Send cookies only through secure connections
   # If the website is only accessible via HTTPS, this setting should be enabled.
   #php_flag session.cookie_secure on
-  # only use cookies for session id
+  # only use cookies for session id (anti-session-hijacking)
   php_flag session.use_cookies on
   php_flag session.use_only_cookies on
   # validity period of the cookie sent to the browser (seconds)
   php_value session.cookie_lifetime 0
   # Not accept session IDs that have not been initialized (anti-session-fixing-attack)
   php_flag session.use_strict_mode on
-  # Refuse to allow session cookies to be accessed via JavaScript
+  # Refuse to allow session cookies to be accessed via JavaScript (anti-session-hijacking)
   php_flag session.cookie_httponly on
-  # Disabling transparent session ID management (anti-session-id-injection)
+  # Disabling transparent session ID management (anti-session-hijacking)
   php_flag session.use_trans_sid off
 </IfModule>
