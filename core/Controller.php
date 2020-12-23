@@ -120,7 +120,7 @@ abstract class Controller
     if ( !preg_match('#https?://#', $url) ) {
       $protocol = $this->request->isSel() ? 'https://' : 'http://';
       $host     = $this->request->getHost();
-      $base_url = $this->redirect->getBaseUrl();
+      $base_url = $this->request->getBaseUrl();
 
       $url = $protocol . $host . $base_url . $url;
     }
@@ -153,10 +153,10 @@ abstract class Controller
    */
   protected function generateCsrfToken($form_name)
   {
-    $key    = 'csrf_token/' . $form_name;
+    $key    = 'csrf_tokens/' . $form_name;
     $tokens = $this->session->get($key, array());
 
-    if ( count($tokens) > 10 ) {
+    if ( count($tokens) >= 10 ) {
       array_shift($tokens);
     }
 

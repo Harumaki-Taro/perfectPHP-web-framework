@@ -31,6 +31,11 @@ abstract class DbRepository
   }
 
   /**
+   * Generate the table this class controlles.
+   */
+  abstract public function generateTable();
+
+  /**
    * Execute the prepared statement and get the result instance.
    * [NOTICE] TODO: 連想配列ではなくて、クラスにすべき
    * $params[array] should be a multidimensional associative array below.
@@ -75,7 +80,7 @@ abstract class DbRepository
         $stmt->execute();
       }
     } catch (PDOException $e) {
-      die('ERROR: Could not prepare/execute query: $sql. ' . $e->getMessage());
+      die("ERROR: Could not prepare/execute query: $sql. " . $e->getMessage());
     }
 
     return $stmt;

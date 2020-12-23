@@ -82,7 +82,7 @@ class View
    * @param  string $string
    * @return string
    */
-  public function excape($string)
+  public function escape($string)
   {
     return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
   }

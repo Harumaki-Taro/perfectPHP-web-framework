@@ -66,9 +66,13 @@ class DbManager
    * @return void
    */
   protected function setMysqlDsn(&$params) {
-    $params['dsn'] = $params['driver']
-                   . ':dbname=' . $params['dbname']
-                   . ';host=' . $params['host'];
+    if ( empty($params['dbname']) ) {
+      $params['dsn'] = $params['driver'] . ':host=' . $params['host'];
+    } else {
+      $params['dsn'] = $params['driver']
+                     . ':dbname=' . $params['dbname']
+                     . ';host=' . $params['host'];
+    }
 
     if ( !empty($params['port']) ) {
       $params['dsn'] .= ';port=' . $params['port'];
@@ -82,7 +86,11 @@ class DbManager
    * @return void
    */
   protected function setSqliteDsn(&$params) {
-    $params['dsn'] = $params['driver'] . ':' . $params['dbname'];
+    if ( empty($params['dbname']) ) {
+      $params['dsn'] = $params['driver'];
+    } else {
+      $params['dsn'] = $params['driver'] . ':' . $params['dbname'];
+    }
   }
 
   /**

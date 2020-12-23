@@ -147,7 +147,7 @@ abstract class Application
    */
   public function getControllerDir()
   {
-    return $this->getRootDir() . '/controllers';
+    return $this->getRootDir() . '/app/controllers';
   }
 
   /**
@@ -157,7 +157,7 @@ abstract class Application
    */
   public function getViewDir()
   {
-    return $this->getRootDir() . '/views';
+    return $this->getRootDir() . '/app/views';
   }
 
   /**
@@ -167,7 +167,7 @@ abstract class Application
    */
   public function getModelDir()
   {
-    return $this->getRootDir() . '/models';
+    return $this->getRootDir() . '/app/models';
   }
 
   /**
