@@ -1,1 +1,4 @@
 Session.vim
+vender/**/*
+!vender/.gitkeep
+composer.lock
