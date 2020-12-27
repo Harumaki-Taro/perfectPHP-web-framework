@@ -31,11 +31,6 @@ abstract class DbRepository
   }
 
   /**
-   * Generate the table this class controlles.
-   */
-  abstract public function generateTable();
-
-  /**
    * Execute the prepared statement and get the result instance.
    * [NOTICE] TODO: 連想配列ではなくて、クラスにすべき
    * $params[array] should be a multidimensional associative array below.
@@ -51,36 +46,20 @@ abstract class DbRepository
       if ( $stmt = $this->pdo->prepare($sql) ) {
         // Bind variables to the prepared statement as parameters
         if ( !empty($params) ) foreach ( $params as $param ) {
-          switch ( $param['type'] ) {
-            case 'string':
-              $stmt->bindValue($param['id'], (string)$param['value'], PDO::PARAM_STR);
-              break;
-            case 'int':
-              $stmt->bindValue($param['id'], (int)$param['value'], PDO::PARAM_INT);
-              break;
-            case 'bool':
-              // PDO::PARAM_BOOLは使わないほうがいいかも
-              $stmt->bindValue($param['id'], (boolean)$param['value'], PDO::PARAM_INT);
-              break;
-            case 'date':
-              $stmt->bindValue($param['id'], $param['value']->format('Y-m-d'), PDO::PARAM_STR);
-              break;
-            case 'datetime':
-              $stmt->bindValue($param['id'], $param['value']->format('Y-m-d H:i:s'), PDO::PARAM_STR);
-              break;
-            case 'null':
-              $stmt->bindValue($param['id'], null, PDO::PARAM_NULL);
-              break;
-            default:
-              die('ERROR: Invalid placeholder value type. ' . $param['type']);
-              break;
+          if ( get_class($param) === 'DbField' ) {
+            $stmt->bindValue($param->getKey(), $param->getValue(), $param->getType());
+          } else {
+            throw new InvalidArgumentException('Use DbField Class. ' . $param);
           }
         }
+        unset($param);
 
         $stmt->execute();
       }
-    } catch (PDOException $e) {
+    } catch ( PDOException $e ) {
       die("ERROR: Could not prepare/execute query: $sql. " . $e->getMessage());
+    } catch ( InvalidArgumentException $e ) {
+      die("ERROR: " . $e->getMessage());
     }
 
     return $stmt;

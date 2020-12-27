@@ -70,7 +70,7 @@ class View
     if ( $_layout ) {
       $_content = $this->render($_layout,
                                 array_merge($this->layout_variables,
-                                            array('__content' => $_content)));
+                                            ['__content' => $_content]));
     }
 
     return $_content;

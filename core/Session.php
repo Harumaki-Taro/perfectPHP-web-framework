@@ -3,8 +3,8 @@
 /**
  * Class for managing session infomation.
  *
- * @var bool $sessionStarted
- * @var bool $sessionIdRegenerated
+ * @var bool  $sessionStarted
+ * @var bool  $sessionIdRegenerated
  */
 class Session
 {
@@ -26,29 +26,36 @@ class Session
   /**
    * Set user data on session.
    *
-   * @param  string $name
+   * @param  string $key
    * @param  mixed  $value
    * @return void
    */
-  public function set($name, $value) 
+  public function set($key, $value)
   {
-    $_SESSION[$name] = $value;
+    $_SESSION[$key] = $value;
+  }
+
+  /**
+   * isset session data.
+   *
+   * @param  string $key
+   * @return bool
+   */
+  public function isset($key)
+  {
+    return isset($_SESSION[$key]);
   }
 
   /**
    * Get user data on session.
    *
-   * @param  string $name
+   * @param  string $key
    * @param  mixed  $defalut = null
    * @return mixed
    */
-  public function get($name, $default = null)
+  public function get($key, $default = null)
   {
-    if ( isset($_SESSION[$name]) ) {
-      return $_SESSION[$name];
-    }
-
-    return $default;
+    return $_SESSION[$key] ?? $default;
   }
 
   /**
@@ -59,6 +66,18 @@ class Session
   public function clear()
   {
     $_SESSION = array();
+  }
+
+  /**
+   * Clear session data corresponding to $key.
+   *
+   * @return void
+   */
+  public function clearData($key)
+  {
+    if ( isset($_SESSION[$key]) ) {
+      unset($_SESSION[$key]);
+    }
   }
 
   /**

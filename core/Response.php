@@ -18,17 +18,23 @@ class Response
   /**
    * Send a response.
    *
+   * @param  bool $debug
    * @return void
    */
-  public function send()
+  public function send($debug)
   {
     header('HTTP/2 ' . $this->status_code . ' ' . $this->status_text);
 
     foreach ( $this->http_headers as $name => $value ) {
       header($name . ': ' . $value);
     }
+    unset($name); unset($value);
 
     echo $this->content;
+
+    if ( $debug ) {
+      var_dump($_SESSION);
+    }
   }
 
   /**

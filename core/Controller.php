@@ -11,6 +11,8 @@
  * @var Session     $session
  * @var DbManager   $db_manager
  * @var array|bool  $auth_actions array of $action or true.
+ * @var array $flash
+ * @var array $flash_types
  */
 abstract class Controller
 {
@@ -22,6 +24,12 @@ abstract class Controller
   protected $session;
   protected $db_manager;
   protected $auth_actions = array();
+  protected $flash = array();
+  protected const FLASH_TYPES
+    = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'];
+  protected const CSRF_TOKEN_SAVE_NUM = 10;
+  protected const CSRF_TOKEN_EXPIRE = 1800;
+  protected const CSRF_TOKEN_LENGTH = 32;
 
   /**
     * Constructor.
@@ -30,7 +38,8 @@ abstract class Controller
     */
   public function __construct($application)
   {
-    $this->controller_name = strtolower(substr(get_class($this), 0, -10));
+    $controller_len = strlen('Controller');
+    $this->controller_name = strtolower(substr(get_class($this), 0, -$controller_len));
 
     $this->application = $application;
     $this->request     = $application->getRequest();
@@ -49,6 +58,7 @@ abstract class Controller
   public function run($action, $params = array())
   {
     $this->action_name = $action;
+    $this->sessionFlashData2flash();
 
     $action_method = $this->action_name . 'Action';
     if ( ! method_exists($this, $action_method) ) {
@@ -76,11 +86,12 @@ abstract class Controller
    */
   protected function render($variables = array(), $template = null, $layout = 'layout')
   {
-    $defaults = array(
+    $defaults = [
       'request'  => $this->request,
       'base_url' => $this->request->getBaseUrl(),
       'session'  => $this->session,
-    );
+      'flash'    => $this->flash,
+    ];
 
     $view = new View($this->application->getViewDir(), $defaults);
 
@@ -149,19 +160,21 @@ abstract class Controller
    * Generate a token, store it in the session, and then return it.
    *
    * @param  string $form_name
+   * @param  int    $token_length
    * @return string
    */
-  protected function generateCsrfToken($form_name)
+  protected function generateCsrfToken($form_name, $token_length=self::CSRF_TOKEN_LENGTH)
   {
     $key    = 'csrf_tokens/' . $form_name;
     $tokens = $this->session->get($key, array());
 
-    if ( count($tokens) >= 10 ) {
+    if ( count($tokens) >= self::CSRF_TOKEN_SAVE_NUM ) {
       array_shift($tokens);
     }
 
-    $token    = sha1($form_name . session_id() . microtime());
-    $tokens[] = $token;
+    $token    = bin2hex(random_bytes($token_length));
+    $now      = new DateTimeImmutable();
+    $tokens[] = ['token' => $token, 'datetime' => $now];
 
     $this->session->set($key, $tokens);
 
@@ -174,20 +187,79 @@ abstract class Controller
    *
    * @param  string $form_name
    * @param  string $token
+   * $param  int    $expire
    * @return bool
    */
-  protected function checkCsrfToken($form_name, $token)
+  protected function checkCsrfToken($form_name, $token, $expire=self::CSRF_TOKEN_EXPIRE)
   {
     $key    = 'csrf_tokens/' . $form_name;
     $tokens = $this->session->get($key, array());
 
-    if ( false !== ($pos = array_search($token, $tokens, true)) ) {
-      unset($tokens[$pos]);
-      $this->session->set($key, $tokens);
+    $now = new DateTimeImmutable();
+    $_tokens = array_column($tokens, 'token');
 
-      return true;
+    if ( false !== ($pos = array_search($token, $_tokens, true)) ) {
+      $token_time = $tokens[$pos]['datetime'];
+      unset($tokens[$pos]);
+      $this->session->set($key, array_values($tokens));
+      if ( $now->getTimestamp() - $token_time->getTimestamp() < $expire ) {
+        $this->session->clearData($key);
+
+        return [true, null];
+      }
+      return [false, 'expired'];
     }
 
-    return false;
+    return[false, 'unauthorized'];
+  }
+
+  /**
+   * Set flash message now.
+   *
+   * @param  string $type
+   * @param  string $message
+   * @return void
+   * @throws InvalidArgumentException
+   */
+  public function setFlashNow($type, $message)
+  {
+    if ( in_array($type, self::FLASH_TYPES, true) ) {
+      $this->flash[$type] = $message;
+      $this->session->clearData('flash/' . $type);
+    } else {
+      throw new InvalidArgumentException('ERROR: Flash message type is invalid.' . $type);
+    }
+  }
+
+  /**
+   * Set flash message.
+   *
+   * @param  string $type
+   * @param  string $message
+   * @return void
+   * @throws InvalidArgumentException
+   */
+  public function setFlash($type, $message)
+  {
+    if ( in_array($type, self::FLASH_TYPES, true) ) {
+      $this->session->set('flash/' . $type, $message);
+    } else {
+      throw new InvalidArgumentException('ERROR: Flash message type is invalid.' . $type);
+    }
+  }
+
+  /**
+   * undocumented function
+   *
+   * @return void
+   */
+  public function sessionFlashData2flash()
+  {
+    foreach ( self::FLASH_TYPES as $flash_type ) {
+      if ( $this->session->isset('flash/' . $flash_type) ) {
+        $this->flash[$flash_type] = $this->session->get('flash/' . $flash_type);
+        $this->session->clearData('flash/' . $flash_type);
+      }
+    }
   }
 }

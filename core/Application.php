@@ -188,14 +188,17 @@ abstract class Application
   public function run()
   {
     try {
-      $params = $this->router->resolve($this->request->getPathInfo());
+      $path_info      = $this->request->getPathInfo();
+      $request_method = $this->request->getRequestMethod();
+      $params         = $this->router->resolve($path_info, $request_method);
 
       if ( $params === false ) {
-        throw new HttpNotFoundException('No route found for ' . $this->request->getPathInfo());
+        throw new HttpNotFoundException('No route found for ' . $path_info .
+                                        ', method: ' . $request_method);
       }
 
-      $controller = $params['controller'];
-      $action     = $params['action'];
+      $controller = $params['_controller'];
+      $action     = $params['_action'];
 
       $this->runAction($controller, $action, $params);
 
@@ -207,7 +210,7 @@ abstract class Application
       $this->runAction($controller, $action);
     }
 
-    $this->response->send();
+    $this->response->send($this->debug);
   }
 
   /**
@@ -266,20 +269,16 @@ abstract class Application
   {
     $this->response->setStatusCode(404, 'Not Found');
     $message = $this->isDebugMode() ? $e->getMessage() : 'Page not found.';
-    $message = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
+    $variables = [
+      'request'  => $this->request,
+      'base_url' => $this->request->getBaseUrl(),
+      'session'  => $this->session,
+      'flash'    => array(),
+      'message'  => $message,
+    ];
 
-    $this->response->setContent(<<<EOF
-<!DOCTYPE html>
-<html>
-<head>
-  <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
-  <title>404</title>
-</head>
-<body>
-  {$message}
-</body>
-</html>
-EOF
-    );
+    $content = (new View($this->getViewDir(), $variables))
+      ->render('error/404_notfound', array(), 'error/error_layout');
+    $this->response->setContent($content);
   }
 }

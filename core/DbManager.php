@@ -22,7 +22,7 @@ class DbManager
   public function connect($name, $params)
   {
     // Set the initial value of $params
-    $params = array_merge(array(
+    $params = array_merge([
       'driver'   => null,
       'dbname'   => '',
       'host'     => '',
@@ -30,7 +30,7 @@ class DbManager
       'user'     => '',
       'password' => '',
       'options'  => array(),
-    ), $params);
+    ], $params);
 
     $params['dsn'] = $params['driver'];
     if ( $params['driver'] === 'mysql' || $params['driver'] == 'pgsql' ) {

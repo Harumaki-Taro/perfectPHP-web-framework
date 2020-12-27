@@ -22,33 +22,25 @@ class Request
   /**
    * Get a variable passed to the current script in URL parameters (query strings).
    *
-   * @param  string $name
+   * @param  string $key
    * @param  string $default = null
-   * @return string
+   * @return string|null
    */
-  public function getGet($name, $default = null)
+  public function getGet($key, $default = null)
   {
-    if ( isset($_GET[$name]) ) {
-      return $_GET[$name];
-    }
-
-    return (string)$default;
+    return $_GET[$key] ?? $default;
   }
 
   /**
    * Get a variable passed to the current script from the HTTP POST method.
    *
-   * @param  string $name
+   * @param  string $key
    * @param  string $default = null
-   * @return string
+   * @return string|null
    */
-  public function getPost($name, $default = null)
+  public function getPost($key, $default = null)
   {
-    if ( isset($_POST[$name]) ) {
-      return $_POST[$name];
-    }
-
-    return (string)$default;
+    return $_POST[$key] ?? $default;
   }
 
   /**
@@ -125,5 +117,27 @@ class Request
     $path_info = (string)substr($request_uri, strlen($base_url));
 
     return $path_info;
+  }
+
+  /**
+   * get HTTP request method.
+   *
+   * @return string|bool
+   */
+  public function getRequestMethod()
+  {
+    if ( $_SERVER['REQUEST_METHOD'] === 'GET' ) {
+      return 'get';
+    } elseif ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
+      if ( $this->getPost('_method') === null ) {
+        return 'post';
+      } elseif ( $this->getPost('_method') === 'DELETE' ) {
+        return 'delete';
+      } elseif ( $this->getPost('_method') === 'PATCH' ) {
+        return 'patch';
+      }
+    }
+
+    return false;
   }
 }

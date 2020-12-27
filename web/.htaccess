@@ -1,5 +1,6 @@
 # Need "AllowOverride All" in httpd.conf
 
+# rewite module
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)$ index.php [QSA,L]
@@ -14,13 +15,14 @@ Options -Indexes
   FileETag None
 </Files>
 
-# X-Frame-Options
+# headers module (X-Frame-Options)
 Header set X-XSS-Protection "1; mode=block"
 Header always set X-Content-Type-Options "nosniff"
 Header always set X-Download-Options: noopen
 Header set X-Powered-By: ""
 Header always append X-Frame-Options SAMEORIGIN
 
+# PHP config
 # Secure Cookie
 # Session id length & bits
 php_value session.sid_length "48"
