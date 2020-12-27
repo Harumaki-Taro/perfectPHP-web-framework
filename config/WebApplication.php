@@ -2,7 +2,8 @@
 
 class MiniBlogApplication extends Application
 {
-  protected $login_action = ['account', 'signout'];
+  protected $login_action = [ 'controller' => '',
+                              'action'     => '', ];
 
   /**
    * Return root directory.
@@ -37,6 +38,6 @@ class MiniBlogApplication extends Application
                                  'host'     => '',
                                  'port'     => '',
                                  'user'     => '',
-                                 'password' => '' ]);
+                                 'password' => '', ]);
   }
 }

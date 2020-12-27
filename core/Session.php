@@ -60,12 +60,30 @@ class Session
 
   /**
    * Clear session data.
+   * [NOTICE]
+   * If you want to completely delete the data registered in the session, use the $destroy flag.
+   * However, when you use set_authenticated() immediately after, do not set $destroy to true.
    *
+   * @param  bool $destroy
    * @return void
    */
-  public function clear()
+  public function clear($destroy=false)
   {
     $_SESSION = array();
+    if ( ini_get("session.use_cookies") ) {
+      $params = session_get_cookie_params();
+      setcookie(session_name(),
+                '',
+                time()-42000,
+                $params['path'],
+                $params['domain'],
+                $params['secure'],
+                $params['httponly']);
+    }
+
+    if ( $destroy ) {
+      session_destroy();
+    }
   }
 
   /**
