@@ -1,8 +1,8 @@
 <?php
 
-class WebApplication extends Application
+class MiniBlogApplication extends Application
 {
-  protected $login_action = array('account', 'signout');
+  protected $login_action = ['account', 'signout'];
 
   /**
    * Return root directory.
@@ -21,8 +21,7 @@ class WebApplication extends Application
    */
   public function registerRoutes()
   {
-    return array(
-    );
+    return [];
   }
 
   /**
@@ -32,13 +31,12 @@ class WebApplication extends Application
    */
   protected function configure()
   {
-    $this->db_manager->connect('master', array(
-      'driver'   => '',
-      'dbname'   => '',
-      'host'     => '',
-      'port'     => '',
-      'user'     => '',
-      'password' => ''
-    ));
+    $this->db_manager->connect('master',
+                               [ 'driver'   => '',
+                                 'dbname'   => '',
+                                 'host'     => '',
+                                 'port'     => '',
+                                 'user'     => '',
+                                 'password' => '' ]);
   }
 }

@@ -17,9 +17,10 @@ class DbManager
    *
    * @param  string $name
    * @param  array  $params
+   * @param  array  $attributes = array()
    * @return void
    */
-  public function connect($name, $params)
+  public function connect($name, $params, $attributes=array())
   {
     // Set the initial value of $params
     $params = array_merge([
@@ -44,14 +45,22 @@ class DbManager
     try {
       $pdo = new PDO($params['dsn'], $params['user'], $params['password'], $params['options']);
 
-      // Raise an exception when an error occurs inside PDO
-      $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-      // Return the result set as an associative array subscripted by column name
-      $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-      // Prohibit compound statement execution in MYSQL
-      $pdo->setAttribute(PDO::MYSQL_ATTR_MULTI_STATEMENTS, false);
-      // Use static placeholders
-      $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+      $defautls = [
+        // Raise an exception when an error occurs inside PDO
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        // Return the result set as an associative array subscripted by column name
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        // Prohibit compound statement execution in MYSQL
+        PDO::MYSQL_ATTR_MULTI_STATEMENTS => false,
+        // Use static placeholders
+        PDO::ATTR_EMULATE_PREPARES => false
+      ];
+
+      $attributes = array_merge($defautls, $attributes);
+
+      foreach ( $attributes as $attribute => $value ) {
+        $pdo->setAttribute($attribute, $value);
+      }
 
       $this->connections[$name] = $pdo;
     } catch ( PDOException $e ) {
