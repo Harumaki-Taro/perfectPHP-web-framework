@@ -144,7 +144,7 @@ class Router
 
     foreach ( $this->routes as $pattern => $params ) {
       if ( preg_match('#^' . $pattern . '$#', $request, $matches) ) {
-        $params = array_merge($params, $matches);
+        $params = array_merge($params, array_map('urldecode', $matches));
 
         return $params;
       }
