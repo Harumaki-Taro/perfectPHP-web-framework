@@ -1,11 +1,19 @@
 {
     "require-dev": {
         "panique/php-sass": "1.0",
-        "symfony/var-dumper": "5.2.*"
+        "symfony/var-dumper": "5.2.*",
+        "munablamu/db-seeder": "*"
     },
 
     "require": {
       "davedevelopment/phpmig": "1.7.*",
       "pimple/pimple": "3.3.*"
-    }
+    },
+
+    "repositories": [
+      {
+        "type":"vcs",
+        "url":"https://github.com/munablamu/db-seeder.git"
+      }
+    ]
 }
