@@ -62,7 +62,7 @@ class Session
    * Clear session data.
    * [NOTICE]
    * If you want to completely delete the data registered in the session, use the $destroy flag.
-   * However, when you use set_authenticated() immediately after, do not set $destroy to true.
+   * However, when you use set_authenticated() immediately after, it is not necessary.
    *
    * @param  bool $destroy
    * @return void
@@ -91,7 +91,7 @@ class Session
    *
    * @return void
    */
-  public function clearData($key)
+  public function unset($key)
   {
     if ( isset($_SESSION[$key]) ) {
       unset($_SESSION[$key]);

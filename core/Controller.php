@@ -203,7 +203,7 @@ abstract class Controller
       unset($tokens[$pos]);
       $this->session->set($key, array_values($tokens));
       if ( $now->getTimestamp() - $token_time->getTimestamp() < $expire ) {
-        $this->session->clearData($key);
+        $this->session->unset($key);
 
         return [true, null];
       }
@@ -225,7 +225,7 @@ abstract class Controller
   {
     if ( in_array($type, self::FLASH_TYPES, true) ) {
       $this->flash[$type] = $message;
-      $this->session->clearData('flash/' . $type);
+      $this->session->unset('flash/' . $type);
     } else {
       throw new InvalidArgumentException('ERROR: Flash message type is invalid.' . $type);
     }
@@ -258,7 +258,7 @@ abstract class Controller
     foreach ( self::FLASH_TYPES as $flash_type ) {
       if ( $this->session->isset('flash/' . $flash_type) ) {
         $this->flash[$flash_type] = $this->session->get('flash/' . $flash_type);
-        $this->session->clearData('flash/' . $flash_type);
+        $this->session->unset('flash/' . $flash_type);
       }
     }
   }
