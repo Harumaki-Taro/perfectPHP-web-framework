@@ -12,7 +12,8 @@
  * @var DbManager   $db_manager
  * @var array|bool  $auth_actions array of $action or true.
  * @var array $flash
- * @var array $flash_types
+ * @var array $before_actions = array()
+ * @var array $after_actions = array()
  */
 abstract class Controller
 {
@@ -25,6 +26,8 @@ abstract class Controller
   protected $db_manager;
   protected $auth_actions = array();
   protected $flash = array();
+  protected $before_actions = array();
+  protected $after_actions = array();
   protected const FLASH_TYPES
     = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'];
   protected const CSRF_TOKEN_SAVE_NUM = 10;
@@ -70,7 +73,19 @@ abstract class Controller
       throw new UnauthorizedActionException();
     }
 
+    foreach ( $this->before_actions as $before_action => $actions ) {
+      if ( in_array($action, $actions, true) ) {
+        $this->$before_action();
+      }
+    }
+
     $content = $this->$action_method($params);
+
+    foreach ( $this->after_actions as $after_action => $actions ) {
+      if ( in_array($action, $actions, true) ) {
+        $this->$after_action();
+      }
+    }
 
     return $content;
   }
@@ -152,7 +167,7 @@ abstract class Controller
   protected function needsAuthentication($action)
   {
     if ( $this->auth_actions === true
-        || (is_array($this->auth_actions) && in_array($action, $this->auth_actions)) ) {
+        || (is_array($this->auth_actions) && in_array($action, $this->auth_actions, true)) ) {
       return true;
     }
 
