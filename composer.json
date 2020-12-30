@@ -2,7 +2,8 @@
     "require-dev": {
         "panique/php-sass": "1.0",
         "symfony/var-dumper": "5.2.*",
-        "munablamu/db-seeder": "*"
+        "munablamu/db-seeder": "*",
+        "phpunit/phpunit":"9.5.*"
     },
 
     "require": {
@@ -15,5 +16,11 @@
         "type":"vcs",
         "url":"https://github.com/munablamu/db-seeder.git"
       }
-    ]
+    ],
+
+    "autoload": {
+      "psr-4": {
+        "":["core/", "app/controllers/", "app/models/", "app/views/", "config/"]
+      }
+    }
 }

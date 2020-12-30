@@ -1,8 +1,8 @@
 <?php
 require 'vendor/autoload.php';
 try{
-  $pdo = new PDO('mysql:dbname=train_db;host=perfectphp_8_mysql_1;port=3306',
-    'root', 'root-password',
+  $pdo = new PDO('mysql:dbname=',
+    'root', '',
     array(PDO::ATTR_PERSISTENT => true));
   $pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
