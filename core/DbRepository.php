@@ -20,6 +20,15 @@ abstract class DbRepository
   }
 
   /**
+   * Validate the registration process.
+   *
+   * @param  array $inputs
+   * @param  array &$errors
+   * @return void
+   */
+  abstract public function validateRegister($inputs, &$errors);
+
+  /**
    * Connection instance setter
    *
    * @param  PDO  $pdo
