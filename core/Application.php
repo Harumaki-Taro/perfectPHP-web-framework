@@ -280,11 +280,14 @@ abstract class Application
     $this->response->setStatusCode(404, 'Not Found');
     $message = $this->isDebugMode() ? $e->getMessage() : 'Page not found.';
     $variables = [
-      'request'  => $this->request,
-      'base_url' => $this->request->getBaseUrl(),
-      'session'  => $this->session,
-      'flash'    => array(),
-      'message'  => $message,
+      'request'         => $this->request,
+      'base_url'        => $this->request->getBaseUrl(),
+      'session'         => $this->session,
+      'root_dir'        => $this->getRootDir(),
+      'stylesheets_dir' => '../app/assets/stylesheets/',
+      'css_dir'         => 'css/',
+      'flash'           => array(),
+      'message'         => $message,
     ];
 
     $content = (new View($this->getViewDir(), $variables))

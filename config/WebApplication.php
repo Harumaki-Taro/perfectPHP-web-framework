@@ -1,6 +1,6 @@
 <?php
 
-class MiniBlogApplication extends Application
+class WebApplication extends Application
 {
   protected $login_action = [ 'controller' => '',
                               'action'     => '', ];
