@@ -1,9 +1,9 @@
 {
     "require-dev": {
-        "panique/php-sass": "1.0",
-        "symfony/var-dumper": "5.2.*",
         "munablamu/db-seeder": "*",
-        "phpunit/phpunit":"9.5.*"
+        "panique/php-sass": "1.0",
+        "phpunit/phpunit":"9.5.*",
+        "symfony/var-dumper": "5.2.*"
     },
 
     "require": {
