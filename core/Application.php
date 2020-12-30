@@ -141,6 +141,16 @@ abstract class Application
   }
 
   /**
+   * Get Router instance.
+   *
+   * @return Router
+   */
+  public function getRouter()
+  {
+    return $this->router;
+  }
+
+  /**
    * Get controller directory.
    *
    * @return string
