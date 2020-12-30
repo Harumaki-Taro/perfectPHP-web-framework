@@ -87,10 +87,13 @@ abstract class Controller
   protected function render($variables = array(), $template = null, $layout = 'layout')
   {
     $defaults = [
-      'request'  => $this->request,
-      'base_url' => $this->request->getBaseUrl(),
-      'session'  => $this->session,
-      'flash'    => $this->flash,
+      'request'         => $this->request,
+      'base_url'        => $this->request->getBaseUrl(),
+      'session'         => $this->session,
+      'root_dir'        => $this->application->getRootDir(),
+      'stylesheets_dir' => '../app/assets/stylesheets/',
+      'css_dir'         => 'css/',
+      'flash'           => $this->flash,
     ];
 
     $view = new View($this->application->getViewDir(), $defaults);
