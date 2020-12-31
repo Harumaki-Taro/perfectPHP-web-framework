@@ -32,12 +32,25 @@ class WebApplication extends Application
    */
   protected function configure()
   {
-    $this->db_manager->connect('master',
-                               [ 'driver'   => '',
-                                 'dbname'   => '',
-                                 'host'     => '',
-                                 'port'     => '',
-                                 'user'     => '',
-                                 'password' => '', ]);
+    if ( $this->debug ) {
+      $this->db_manager->connect('master',
+                                 [ 'driver'   => '',
+                                   'dbname'   => '',
+                                   'host'     => '',
+                                   'port'     => '',
+                                   'user'     => '',
+                                   'password' => '', ]);
+    } else {
+      # for heroku-postgresql
+      $url = parse_url(getenv('DATABASE_URL'));
+
+      $this->db_manager->connect('master',
+                                 [ 'driver'   => 'pgsql',
+                                   'dbname'   => substr($url['path'], 1),
+                                   'host'     => $url['host'],
+                                   'port'     => $url['port'],
+                                   'user'     => $url['user'],
+                                   'password' => $url['pass'], ]);
+    }
   }
 }
