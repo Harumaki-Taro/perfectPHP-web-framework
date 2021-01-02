@@ -68,9 +68,14 @@ abstract class Controller
       $this->forward404();
     }
 
-    if ( $this->needsAuthentication($action) && !$this->session->isAuthenticated() )
-    {
-      throw new UnauthorizedActionException();
+    $requiredAuthentication = $this->needsAuthentication($action);
+    if ( !$this->checkAuthentication($requiredAuthentication,
+                                     $this->session->isAuthenticated()) ) {
+      if ( $requiredAuthentication === true ) {
+        throw new UnauthorizedActionException('Login required.', true);
+      } else {
+        throw new UnauthorizedActionException('Login required.', $requiredAuthentication[0]);
+      }
     }
 
     foreach ( $this->before_actions as $before_action => $actions ) {
@@ -162,16 +167,64 @@ abstract class Controller
    * Check if a login authentication is required.
    *
    * @param  string $action
-   * @return bool
+   * @return bool|array
    */
   protected function needsAuthentication($action)
   {
-    if ( $this->auth_actions === true
-        || (is_array($this->auth_actions) && in_array($action, $this->auth_actions, true)) ) {
+    if ( $this->auth_actions === true ) {
       return true;
+    } elseif ( is_array($this->auth_actions) ) {
+      if ( isset($this->auth_actions[0]) ) {
+        # ex. auth_actions = [index, new, show];
+        if ( in_array($action, $this->auth_actions, true) ) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        # ex. auth_actions = [
+        #       'user'  => [ index, new, show ],
+        #       'staff' => [ index, new, show, create, destory ],
+        #       'admin' => true,
+        #     ];
+        $results = null;
+        foreach ( $this->auth_actions as $auth_type => $auth_actions ) {
+          if ( $auth_actions === true ) {
+            $results[] = $auth_type;
+          } elseif ( is_array($auth_actions) && in_array($action, $auth_actions, true) ) {
+            $results[] = $auth_type;
+          } else {
+            throw new AuthorizationDefinitionException('Definition of autorization is wrong.');
+          }
+        }
+
+        return $results ?? false;
+      }
+    } else {
+      throw new AuthorizationDefinitionException('Definition of autorization is wrong.');
+    }
+  }
+
+  /**
+   * Check that the user has the required authentication.
+   *
+   * @param  array|bool  $needsAuthentication
+   * @param  string|bool $login_type
+   * @return bool
+   */
+  protected function checkAuthentication($needsAuthentication, $login_type)
+  {
+    if ( !isset($needsAuthentication) ) {
+      return false;
     }
 
-    return false;
+    if ( is_bool($needsAuthentication) ) {
+      return $needsAuthentication ? boolval($login_type) : true;
+    } elseif ( is_array($needsAuthentication) ) {
+      return in_array($login_type, $needsAuthentication, true);
+    } else {
+      return false;
+    }
   }
 
   /**

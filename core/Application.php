@@ -24,6 +24,7 @@ abstract class Application
   protected $db_manager;
   protected $router;
   protected $login_action = array();
+  protected $authentications = [true, ];
 
   /**
    * Constructor.
@@ -33,6 +34,7 @@ abstract class Application
   public function __construct($debug = false)
   {
     $this->setDebugMode($debug);
+    $this->setAuthentications();
     $this->initialize();
     $this->configure();
   }
@@ -56,6 +58,20 @@ abstract class Application
   }
 
   /**
+   * undocumented function
+   *
+   * @return void
+   */
+  protected function setAuthentications()
+  {
+    if ( isset($this->login_action[0]) ) {
+      $this->authentications = [true, ];
+    } else {
+      $this->authentications = array_keys($this->login_action);
+    }
+  }
+
+  /**
    * Initialize application.
    *
    * @return void
@@ -64,7 +80,7 @@ abstract class Application
   {
     $this->request    = new Request();
     $this->response   = new Response();
-    $this->session    = new Session();
+    $this->session    = new Session($this->authentications);
     $this->db_manager = new DbManager();
     $this->router     = new Router($this->registerRoutes());
   }
@@ -212,12 +228,18 @@ abstract class Application
 
       $this->runAction($controller, $action, $params);
 
-    } catch ( HttpNotFoundException $e ) {
+    } catch ( HttpNotFoundException | AuthorizationDefinitionException $e ) {
       $this->render404Page($e);
 
     } catch ( UnauthorizedActionException $e ) {
-      $this->runAction($this->login_action['controller'],
-                       $this->login_action['action']);
+      $login_action = $this->chooseLoginAction($e);
+
+      if ( $login_action !== null ) {
+        $this->runAction($login_action['controller'], $login_action['action']);
+      } else {
+        $e->setMessage('Incorect authentication');
+        $this->render404Page($e);
+      }
     }
 
     $this->response->send($this->debug);
@@ -267,6 +289,26 @@ abstract class Application
     }
 
     return new $controller_class($this);
+  }
+
+  /**
+   * undocumented function
+   *
+   * @param  UnauthorizedActionException $exception
+   * @return void
+   */
+  protected function chooseLoginAction($exception)
+  {
+    $required_authentication = $exception->getRequiredAuthentication();
+    if ( in_array($required_authentication, $this->getSession()->getAuthentications()) ) {
+      if ( $required_authentication === true ) {
+        return $this->login_action;
+      } else {
+        return $this->login_action[$required_authentication];
+      }
+    } else {
+      return null;
+    }
   }
 
   /**

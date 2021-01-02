@@ -5,21 +5,28 @@
  *
  * @var bool  $sessionStarted
  * @var bool  $sessionIdRegenerated
+ * @var array $authentications
  */
 class Session
 {
   protected static $sessionStarted       = false;
   protected static $sessionIdRegenerated = false;
+  protected $authentications = [true,];
 
   /**
    * Constructor. Automatically Start session.
    */
-  public function __construct()
+  public function __construct($authentications=[true,])
   {
     if ( !self::$sessionStarted ) {
       session_start();
 
       self::$sessionStarted = true;
+    }
+
+    $this->authentications = $authentications;
+    if ( $this->get('_authenticated') === null ) {
+      $this->setAuthenticated(false);
     }
   }
 
@@ -115,28 +122,42 @@ class Session
 
   /**
    * Make the user logged in.
-   * [NOTICE]
-   * This method is a simple login function.
    *
-   * @param  bool $destroy = true
-   * @return void
+   * @param  string|bool $authentication
+   * @return bool
    */
-  public function setAuthenticated($bool)
+  public function setAuthenticated($authentication)
   {
-    $this->set('_authenticated', $bool);
-
     $this->regenerate();
+
+    if ( in_array($authentication, $this->authentications) || $authentication === false ) {
+      $this->set('_authenticated', $authentication);
+
+      return true;
+    } else {
+      $this->set('_authenticated', false);
+
+      return false;
+    }
   }
 
   /**
    * Check if the user is logged in.
-   * [NOTICE]
-   * This method is a simple login function.
    *
-   * @retuen bool
+   * @retuen string|bool
    */
   public function isAuthenticated()
   {
     return $this->get('_authenticated', false);
+  }
+
+  /**
+   * Get allowed authentications.
+   *
+   * @return array
+   */
+  public function getAuthentications()
+  {
+    return $this->authentications;
   }
 }
